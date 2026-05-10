@@ -20,7 +20,7 @@ public class MovimientoDAO {
 
     public List<movimiento> findAll() throws SQLException {
         List<movimiento> lista = new ArrayList<>();
-        String sql = "SELECT * FROM movimiento";
+        String sql = "SELECT id, descripcion, monto, tipo, categoria, fecha FROM movimiento";
         try (Connection con = getConnection();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
@@ -39,20 +39,21 @@ public class MovimientoDAO {
     }
 
     public movimiento findById(int id) throws SQLException {
-        String sql = "SELECT * FROM movimiento WHERE id = ?";
+        String sql = "SELECT id, descripcion, monto, tipo, categoria, fecha FROM movimiento WHERE id = ?";
         try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql);) {
             ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return new movimiento(
-                        rs.getInt("id"),
-                        rs.getString("descripcion"),
-                        rs.getDouble("monto"),
-                        rs.getString("tipo"),
-                        rs.getString("categoria"),
-                        rs.getString("fecha")
-                );
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new movimiento(
+                            rs.getInt("id"),
+                            rs.getString("descripcion"),
+                            rs.getDouble("monto"),
+                            rs.getString("tipo"),
+                            rs.getString("categoria"),
+                            rs.getString("fecha")
+                    );
+                }
             }
         }
         return null;
