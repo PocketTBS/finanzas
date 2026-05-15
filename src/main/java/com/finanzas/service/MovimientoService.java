@@ -1,38 +1,43 @@
 package com.finanzas.service;
 
-import com.finanzas.dao.MovimientoDAO;
+import com.finanzas.interfaces.IMovimientoDAO;
+import com.finanzas.interfaces.IMovimientoService;
 import com.finanzas.model.movimiento;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @Service
-public class MovimientoService {
+public class MovimientoService implements IMovimientoService {
 
-    private final MovimientoDAO dao;
+    private final IMovimientoDAO dao;
 
-    public MovimientoService(MovimientoDAO dao) {
+    public MovimientoService(IMovimientoDAO dao) {
         this.dao = dao;
     }
 
-    public List<movimiento> listarTodos() throws SQLException {
+    @Override
+    public List<movimiento> listarTodos() {
         return dao.findAll();
     }
 
-    public movimiento buscarPorId(int id) throws SQLException {
+    @Override
+    public movimiento buscarPorId(int id) {
         return dao.findById(id);
     }
 
-    public void crear(movimiento m) throws SQLException {
+    @Override
+    public void crear(movimiento m) {
         dao.save(m);
     }
 
-    public void actualizar(int id, movimiento m) throws SQLException {
+    @Override
+    public void actualizar(int id, movimiento m) {
         dao.update(id, m);
     }
 
-    public void eliminar(int id) throws SQLException {
+    @Override
+    public void eliminar(int id) {
         dao.delete(id);
     }
 }

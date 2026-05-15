@@ -1,10 +1,17 @@
 package com.finanzas.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "movimiento")
 public class movimiento {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String descripcion;
     private double monto;
-    private String tipo;       // "ingreso" o "gasto"
+    private String tipo;
     private String categoria;
     private String fecha;
 

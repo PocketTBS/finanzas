@@ -1,14 +1,16 @@
 package com.finanzas.dao;
 
+import com.finanzas.interfaces.IMovimientoDAO;
 import com.finanzas.model.movimiento;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@Primary
 @Repository
-public class MovimientoDAO {
+public class MovimientoDAO implements IMovimientoDAO {
 
     private final String URL = "jdbc:mysql://localhost:3306/finanzas_db";
     private final String USER = "root";
@@ -18,7 +20,8 @@ public class MovimientoDAO {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    public List<movimiento> findAll() throws SQLException {
+    @Override
+    public List<movimiento> findAll() {
         List<movimiento> lista = new ArrayList<>();
         String sql = "SELECT id, descripcion, monto, tipo, categoria, fecha FROM movimiento";
         try (Connection con = getConnection();
@@ -34,14 +37,17 @@ public class MovimientoDAO {
                         rs.getString("fecha")
                 ));
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return lista;
     }
 
-    public movimiento findById(int id) throws SQLException {
+    @Override
+    public movimiento findById(int id) {
         String sql = "SELECT id, descripcion, monto, tipo, categoria, fecha FROM movimiento WHERE id = ?";
         try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);) {
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -55,11 +61,14 @@ public class MovimientoDAO {
                     );
                 }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
 
-    public void save(movimiento m) throws SQLException {
+    @Override
+    public void save(movimiento m) {
         String sql = "INSERT INTO movimiento (descripcion, monto, tipo, categoria, fecha) VALUES (?, ?, ?, ?, ?)";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -69,10 +78,13 @@ public class MovimientoDAO {
             ps.setString(4, m.getCategoria());
             ps.setString(5, m.getFecha());
             ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void update(int id, movimiento m) throws SQLException {
+    @Override
+    public void update(int id, movimiento m) {
         String sql = "UPDATE movimiento SET descripcion=?, monto=?, tipo=?, categoria=?, fecha=? WHERE id=?";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -83,15 +95,20 @@ public class MovimientoDAO {
             ps.setString(5, m.getFecha());
             ps.setInt(6, id);
             ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void delete(int id) throws SQLException {
+    @Override
+    public void delete(int id) {
         String sql = "DELETE FROM movimiento WHERE id = ?";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
