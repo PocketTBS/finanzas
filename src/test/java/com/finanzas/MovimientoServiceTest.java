@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +26,7 @@ class MovimientoServiceTest {
 
     @Test
     void listarTodos_debeRetornarLista() {
-        movimiento m = new movimiento(1, "Mercado", 50000, "gasto", "comida", "2024-01-01");
+        movimiento m = new movimiento(1, "Mercado", 50000, "gasto", LocalDate.now());
         when(dao.findAll()).thenReturn(List.of(m));
 
         List<movimiento> resultado = service.listarTodos();
@@ -37,7 +38,7 @@ class MovimientoServiceTest {
 
     @Test
     void buscarPorId_debeRetornarMovimiento() {
-        movimiento m = new movimiento(1, "Mercado", 50000, "gasto", "comida", "2024-01-01");
+        movimiento m = new movimiento(1, "Mercado", 50000, "gasto",LocalDate.now());
         when(dao.findById(1)).thenReturn(m);
 
         movimiento resultado = service.buscarPorId(1);
@@ -58,7 +59,7 @@ class MovimientoServiceTest {
 
     @Test
     void crear_debeLlamarSave() {
-        movimiento m = new movimiento(0, "Arriendo", 800000, "gasto", "vivienda", "2024-01-01");
+        movimiento m = new movimiento(0, "Arriendo", 800000, "gasto", LocalDate.now());
 
         service.crear(m);
 

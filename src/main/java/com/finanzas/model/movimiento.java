@@ -1,6 +1,9 @@
 package com.finanzas.model;
 
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "movimiento")
@@ -13,16 +16,15 @@ public class movimiento {
     private double monto;
     private String tipo;
     private String categoria;
-    private String fecha;
+    private LocalDate fecha;
 
     public movimiento() {}
 
-    public movimiento(int id, String descripcion, double monto, String tipo, String categoria, String fecha) {
+    public movimiento(int id, String descripcion, double monto, String tipo, LocalDate fecha) {
         this.id = id;
         this.descripcion = descripcion;
         this.monto = monto;
         this.tipo = tipo;
-        this.categoria = categoria;
         this.fecha = fecha;
     }
 
@@ -38,9 +40,6 @@ public class movimiento {
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
 
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
-
-    public String getFecha() { return fecha; }
-    public void setFecha(String fecha) { this.fecha = fecha; }
+    public LocalDate getFecha() { return fecha; }
+    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 }

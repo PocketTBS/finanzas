@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 @Primary
@@ -23,7 +24,7 @@ public class MovimientoDAO implements IMovimientoDAO {
     @Override
     public List<movimiento> findAll() {
         List<movimiento> lista = new ArrayList<>();
-        String sql = "SELECT id, descripcion, monto, tipo, categoria, fecha FROM movimiento";
+        String sql = "SELECT id, descripcion, monto, tipo, fecha FROM movimiento";
         try (Connection con = getConnection();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
@@ -33,8 +34,7 @@ public class MovimientoDAO implements IMovimientoDAO {
                         rs.getString("descripcion"),
                         rs.getDouble("monto"),
                         rs.getString("tipo"),
-                        rs.getString("categoria"),
-                        rs.getString("fecha")
+                        rs.getObject("fecha", LocalDate.class)
                 ));
             }
         } catch (SQLException e) {
@@ -45,7 +45,7 @@ public class MovimientoDAO implements IMovimientoDAO {
 
     @Override
     public movimiento findById(int id) {
-        String sql = "SELECT id, descripcion, monto, tipo, categoria, fecha FROM movimiento WHERE id = ?";
+        String sql = "SELECT id, descripcion, monto, tipo,fecha FROM movimiento WHERE id = ?";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -56,8 +56,7 @@ public class MovimientoDAO implements IMovimientoDAO {
                             rs.getString("descripcion"),
                             rs.getDouble("monto"),
                             rs.getString("tipo"),
-                            rs.getString("categoria"),
-                            rs.getString("fecha")
+                            rs.getObject("fecha", LocalDate.class)
                     );
                 }
             }
@@ -69,14 +68,13 @@ public class MovimientoDAO implements IMovimientoDAO {
 
     @Override
     public void save(movimiento m) {
-        String sql = "INSERT INTO movimiento (descripcion, monto, tipo, categoria, fecha) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO movimiento (descripcion, monto, tipo, fecha) VALUES (?, ?, ?, ?)";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, m.getDescripcion());
             ps.setDouble(2, m.getMonto());
             ps.setString(3, m.getTipo());
-            ps.setString(4, m.getCategoria());
-            ps.setString(5, m.getFecha());
+            ps.setObject(4, m.getFecha());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -85,15 +83,14 @@ public class MovimientoDAO implements IMovimientoDAO {
 
     @Override
     public void update(int id, movimiento m) {
-        String sql = "UPDATE movimiento SET descripcion=?, monto=?, tipo=?, categoria=?, fecha=? WHERE id=?";
+        String sql = "UPDATE movimiento SET descripcion=?, monto=?, tipo=?, fecha=? WHERE id=?";
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, m.getDescripcion());
             ps.setDouble(2, m.getMonto());
             ps.setString(3, m.getTipo());
-            ps.setString(4, m.getCategoria());
-            ps.setString(5, m.getFecha());
-            ps.setInt(6, id);
+            ps.setObject(4, m.getFecha());
+            ps.setInt(5, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);

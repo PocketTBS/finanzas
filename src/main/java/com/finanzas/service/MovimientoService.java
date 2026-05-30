@@ -6,6 +6,7 @@ import com.finanzas.model.movimiento;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.time.LocalDate;
 
 @Service
 public class MovimientoService implements IMovimientoService {
@@ -28,11 +29,13 @@ public class MovimientoService implements IMovimientoService {
 
     @Override
     public void crear(movimiento m) {
+        m.setFecha(LocalDate.now());
         dao.save(m);
     }
 
     @Override
     public void actualizar(int id, movimiento m) {
+        m.setFecha(LocalDate.now());
         dao.update(id, m);
     }
 
